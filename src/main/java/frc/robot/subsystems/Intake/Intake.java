@@ -17,5 +17,9 @@ public class Intake {
     public Command setVoltageC(double voltage){
         return runOnce(()->setVoltage(voltage));
     }
+
+    public Command setVoltageInC(){
+
+    }
 }
 
