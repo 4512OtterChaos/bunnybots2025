@@ -19,7 +19,11 @@ public class Intake {
     }
 
     public Command setVoltageInC(){
+        return setVoltageC(voltageIn);
+    }
 
+    public Command setVoltageOutC() {
+        return setVoltageC(voltageOut);
     }
 }
 
