@@ -8,7 +8,11 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.subsystems.Intake.IntakeConstants.*;
 
 public class Intake {
-    TalonFX motor = new TalonFX(motorID);
+    TalonFX motor = new TalonFX(kMotorID);
+
+    public Intake() {
+        motor.getConfigurator().apply(kConfig);
+    }
 
     public void setVoltage(double voltage){
         motor.setVoltage(voltage);
@@ -19,11 +23,13 @@ public class Intake {
     }
 
     public Command setVoltageInC(){
-        return setVoltageC(voltageIn);
+        return setVoltageC(kVoltageIn);
     }
 
     public Command setVoltageOutC() {
-        return setVoltageC(voltageOut);
+        return setVoltageC(kVoltageOut);
     }
 }
+
+
 
