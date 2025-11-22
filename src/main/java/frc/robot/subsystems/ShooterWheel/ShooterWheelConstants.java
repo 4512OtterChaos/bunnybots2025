@@ -14,4 +14,25 @@ public class ShooterWheelConstants {
     public static final int kLeftMotorID = 31;
     public static final int kRightMotorID = 32;
 
+    public static final AngularVelocity kVelocityTolerance = RPM.of(30);
+
+    public static final TalonFXConfiguration kConfig = new TalonFXConfiguration();
+    static {
+        MotorOutputConfigs output = kConfig.MotorOutput;
+        output.NeutralMode = NeutralModeValue.Coast;
+
+        CurrentLimitsConfigs current = kConfig.CurrentLimits;
+        current.StatorCurrentLimitEnable = true;
+        current.StatorCurrentLimit = 40; 
+
+        Slot0Configs control = kConfig.Slot0;
+        control.kP = 0.1; 
+        control.kI = 0;
+        control.kD = 0;
+        
+        control.kS = 0.1;
+        control.kV = 0;
+        control.kA = 0;
+    }
+
 }
