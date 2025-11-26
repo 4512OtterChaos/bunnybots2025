@@ -9,7 +9,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ShooterArmConstants {
      
-    public static final int motorID = 41;
+    public static final int kMotorID = 41;
+
+    public static final double kVoltageIn = 1.5;
+    public static final double kVoltageOut = -1;
 
     public static final TalonFXConfiguration kConfig = new TalonFXConfiguration();
     static {

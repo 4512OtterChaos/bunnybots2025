@@ -22,4 +22,16 @@ public class ShooterArm {
     public void setVoltage(double voltage) {
         leftMotor.setVoltage(voltage);
     }
+
+    public Command setVoltageC(double voltage) {
+        return runOnce(()-> setVoltage(voltage));
+    }
+
+    public Command setVoltageInC() {
+        return setVoltageC(kVoltageIn);
+    }
+
+    public Command setVoltageOutC() {
+        return setVoltageC(kVoltageOut);
+    }
 }
