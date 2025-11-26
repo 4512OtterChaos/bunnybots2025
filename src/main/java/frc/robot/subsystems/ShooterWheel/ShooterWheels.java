@@ -6,7 +6,11 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.subsystems.ShooterWheel.ShooterWheelConstants.*;
 
@@ -32,6 +36,7 @@ public class ShooterWheels {
 
     public void setVelocity(AngularVelocity velocity) {
         leftMotor.setControl(velocityRequest.withVelocity(velocity));
+        targetVelocity = velocity;
     }
 
     public AngularVelocity getAngularVelocity(){
@@ -40,5 +45,13 @@ public class ShooterWheels {
 
     public boolean upToSpeed() {
         return Math.abs(targetVelocity.in(RPM) - getAngularVelocity().in(RPM)) < kVelocityTolerance.in(RPM);
+    }
+
+    public Command setVelocityC(AngularVelocity velocity) {
+        return runOnce(()-> setVelocity(velocity));
+    }
+
+    public Trigger upToSpeedT() {
+        return new Trigger(()-> upToSpeed());
     }
 }
