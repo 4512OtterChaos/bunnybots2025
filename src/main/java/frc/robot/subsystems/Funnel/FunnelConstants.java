@@ -18,8 +18,8 @@ public class FunnelConstants {
     public static final int kLeftMotorID = 51;
     public static final int kRightMotorID = 52;
 
-    public static final Angle homeAngle = Degrees.of(0);
-    public static final Angle maxAngle = Degrees.of(60);
+    public static final Angle kHomeAngle = Degrees.of(0);
+    public static final Angle kMaxAngle = Degrees.of(60);
 
     public static final TalonFXConfiguration kConfig = new TalonFXConfiguration();
     static {
