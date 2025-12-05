@@ -4,18 +4,35 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Superstructure;
+import frc.robot.subsystems.Funnel.Funnel;
 import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.ShooterArm.ShooterArm;
+import frc.robot.subsystems.ShooterWheel.ShooterWheels;
 
 public class RobotContainer {
   Intake intake = new Intake();
+  ShooterArm shooterArm = new ShooterArm();
+  ShooterWheels shooterWheels = new ShooterWheels();
+  Funnel funnel = new Funnel();
+  Superstructure superstructure = new Superstructure(intake, shooterArm, shooterWheels, funnel);
   
   CommandXboxController controller = new CommandXboxController(0);
   
   public RobotContainer() {
+    configureDefaultCommands();
     configureBindings();
+  }
+
+  private void configureDefaultCommands() {
+    intake.setDefaultCommand(intake.setVoltageC(0));
+    shooterArm.setDefaultCommand(shooterArm.setVoltageOutC());
+    shooterWheels.setDefaultCommand(shooterWheels.setVoltageC(0));
   }
   
   private void configureBindings() {

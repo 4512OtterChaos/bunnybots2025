@@ -4,11 +4,13 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import static frc.robot.subsystems.ShooterArm.ShooterArmConstants.*; 
 
-public class ShooterArm {
+public class ShooterArm extends SubsystemBase{
     
     TalonFX leftMotor = new TalonFX(kMotorID);
     TalonFX rightMotor = new TalonFX(kMotorID);

@@ -9,12 +9,14 @@ import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.subsystems.ShooterWheel.ShooterWheelConstants.*;
 
-public class ShooterWheels {
+public class ShooterWheels extends SubsystemBase{
     private TalonFX leftMotor = new TalonFX(kLeftMotorID);
     private TalonFX rightMotor = new TalonFX(kRightMotorID);
 
@@ -45,6 +47,10 @@ public class ShooterWheels {
 
     public boolean upToSpeed() {
         return Math.abs(targetVelocity.in(RPM) - getAngularVelocity().in(RPM)) < kVelocityTolerance.in(RPM);
+    }
+
+    public Command setVoltageC(double voltage) {
+        return runOnce(()-> setVoltage(voltage));
     }
 
     public Command setVelocityC(AngularVelocity velocity) {
