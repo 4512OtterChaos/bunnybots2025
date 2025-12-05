@@ -36,8 +36,10 @@ public class RobotContainer {
   }
   
   private void configureBindings() {
-    controller.rightTrigger().whileTrue(intake.setVoltageInC().repeatedly().finallyDo(()->intake.setVoltage(0)));
-    controller.leftTrigger().whileTrue(intake.setVoltageOutC().repeatedly().finallyDo(()->intake.setVoltage(0)));
+    controller.rightTrigger().whileTrue(intake.setVoltageInC().repeatedly());
+    controller.leftTrigger().whileTrue(intake.setVoltageOutC().repeatedly());
+
+    controller.rightBumper().whileTrue(superstructure.shotSequence());
   }
   
   public void teleopPeriodic(){
