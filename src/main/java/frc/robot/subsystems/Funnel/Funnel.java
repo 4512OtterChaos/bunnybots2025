@@ -32,23 +32,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Funnel extends SubsystemBase{
-    TalonFX leftMotor = new TalonFX(kLeftMotorID);
-    TalonFX rightMotor = new TalonFX(kRightMotorID);
+    private TalonFX leftMotor = new TalonFX(kLeftMotorID);
+    private TalonFX rightMotor = new TalonFX(kRightMotorID);
 
-    Angle targetAngle = kHomeAngle; 
+    private Angle targetAngle = kHomeAngle; 
 
-    MotionMagicVoltage mmRequest = new MotionMagicVoltage(0);
+    private final MotionMagicVoltage mmRequest = new MotionMagicVoltage(0);
 
     public Funnel() {
         leftMotor.getConfigurator().apply(kConfig);
         rightMotor.getConfigurator().apply(kConfig);
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
 
+        SmartDashboard.putData("Funnel/Subsystem", this);
+
         leftMotor.setPosition(kHomeAngle);
     }
 
     @Override
     public void periodic() {
+        leftMotor.setControl(mmRequest.withPosition(targetAngle)); //TODO: Set periodically?
+
         // ### Simulation
 
         visualizeState(leftMotor.getPosition().getValue());
@@ -63,7 +67,6 @@ public class Funnel extends SubsystemBase{
 
     public void setAngle(Angle angle) {
         angle = Degrees.of(MathUtil.clamp(angle.in(Degrees), kHomeAngle.in(Degrees), kMaxAngle.in(Degrees)));
-        leftMotor.setControl(mmRequest.withPosition(angle)); //TODO: Set periodically?
         targetAngle = angle;
     }
 
@@ -72,7 +75,7 @@ public class Funnel extends SubsystemBase{
     // }
 
     public Command setAngleC(Angle angle) {
-        return runOnce(()-> setAngleC(angle));
+        return runOnce(()-> setAngle(angle));
     }
 
 
