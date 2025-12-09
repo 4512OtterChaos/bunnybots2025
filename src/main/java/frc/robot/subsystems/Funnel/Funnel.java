@@ -53,7 +53,7 @@ public class Funnel extends SubsystemBase{
     public void periodic() {
         leftMotor.setControl(mmRequest.withPosition(targetAngle)); //TODO: Set periodically?
 
-        // ### Simulation
+        //### Simulation
 
         visualizeState(leftMotor.getPosition().getValue());
         visualizeSetpoint(targetAngle);
@@ -107,15 +107,15 @@ public class Funnel extends SubsystemBase{
 
     private final double kDefaultFunnelDeg = 90;
 
-    private final MechanismLigament2d mechStart = mechRoot.append(
-            new MechanismLigament2d("Arm", kPivotHeight.in(Meters), 90, kMechWidth, kMechBaseColor));
-    private final MechanismLigament2d mechFunnel = mechStart.append(
-            new MechanismLigament2d("Intake", kFunnelLength.in(Meters), kDefaultFunnelDeg, kMechWidth, kMechBaseColor));
+    private final MechanismLigament2d mechBase = mechRoot.append(
+            new MechanismLigament2d("Base", kPivotHeight.in(Meters), 90, kMechWidth, kMechBaseColor));
+    private final MechanismLigament2d mechFunnel = mechBase.append(
+            new MechanismLigament2d("Funnel", kFunnelLength.in(Meters), kDefaultFunnelDeg, kMechWidth, kMechBaseColor));
     
-    private final MechanismLigament2d setpointStart = mechRoot.append(
-            new MechanismLigament2d("setpointArmBase", kPivotHeight.in(Meters), 90, kSetpointWidth, kSetpointBaseColor));
-    private final MechanismLigament2d setpointIntake = setpointStart.append(
-            new MechanismLigament2d("setpointArm", kFunnelLength.in(Meters), kDefaultFunnelDeg, kSetpointWidth,
+    private final MechanismLigament2d setpointBase = mechRoot.append(
+            new MechanismLigament2d("setpointBase", kPivotHeight.in(Meters), 90, kSetpointWidth, kSetpointBaseColor));
+    private final MechanismLigament2d setpointFunnel = setpointBase.append(
+            new MechanismLigament2d("setpointFunnel", kFunnelLength.in(Meters), kDefaultFunnelDeg, kSetpointWidth,
                     kSetpointBaseColor));
     
     SingleJointedArmSim funnelSim = new SingleJointedArmSim(
@@ -147,7 +147,7 @@ public class Funnel extends SubsystemBase{
     }
     
     public void visualizeSetpoint(Angle targetAngle) {
-        setpointIntake.setAngle(90 - targetAngle.in(Degrees));
+        setpointFunnel.setAngle(90 - targetAngle.in(Degrees));
     }
 
     @Override
