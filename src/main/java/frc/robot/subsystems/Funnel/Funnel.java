@@ -80,16 +80,6 @@ public class Funnel extends SubsystemBase{
     //########## Simulation (IGNORE FOR NOW)
 
     public void log() {
-        SmartDashboard.putNumber("Funnel/Funnel Native", leftMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Funnel/Funnel Degrees", leftMotor.getPosition().getValue().in(Degrees));
-        SmartDashboard.putNumber("Funnel/Funnel Target Degrees", targetAngle.in(Degrees));
-        SmartDashboard.putNumber("Funnel/Motor Current", leftMotor.getStatorCurrent().getValue().in(Amps));
-        // SmartDashboard.putBoolean("Funnel/isStalled", isStalled());
-        SmartDashboard.putNumber("Funnel/Motor Voltage", leftMotor.getMotorVoltage().getValue().in(Volts));
-        // SmartDashboard.putNumber("Funnel/Motor Target Voltage", targetVoltage);
-        SmartDashboard.putNumber("Funnel/Motor Velocity", leftMotor.getVelocity().getValue().in(RPM));
-        // SmartDashboard.putBoolean("Funnel/Motor Stalled", isStalled());
-        SmartDashboard.putNumber("Funnel/Time", Timer.getFPGATimestamp());
         SmartDashboard.putData("Funnel/Mech2d", mech);
     }
     
@@ -104,15 +94,15 @@ public class Funnel extends SubsystemBase{
 
     private final double kDefaultFunnelDeg = 90;
 
-    private final MechanismLigament2d mechStart = mechRoot.append(
-            new MechanismLigament2d("Arm", kPivotHeight.in(Meters), 90, kMechWidth, kMechBaseColor));
-    private final MechanismLigament2d mechFunnel = mechStart.append(
-            new MechanismLigament2d("Intake", kFunnelLength.in(Meters), kDefaultFunnelDeg, kMechWidth, kMechBaseColor));
+    private final MechanismLigament2d mechFunnelBase = mechRoot.append(
+            new MechanismLigament2d("FunnelBase", kPivotHeight.in(Meters), 90, kMechWidth, kMechBaseColor));
+    private final MechanismLigament2d mechFunnel = mechFunnelBase.append(
+            new MechanismLigament2d("Funnel", kFunnelLength.in(Meters), kDefaultFunnelDeg, kMechWidth, kMechBaseColor));
     
-    private final MechanismLigament2d setpointStart = mechRoot.append(
-            new MechanismLigament2d("setpointArmBase", kPivotHeight.in(Meters), 90, kSetpointWidth, kSetpointBaseColor));
-    private final MechanismLigament2d setpointIntake = setpointStart.append(
-            new MechanismLigament2d("setpointArm", kFunnelLength.in(Meters), kDefaultFunnelDeg, kSetpointWidth,
+    private final MechanismLigament2d setpointFunnelBase = mechRoot.append(
+            new MechanismLigament2d("setpointFunnelBase", kPivotHeight.in(Meters), 90, kSetpointWidth, kSetpointBaseColor));
+    private final MechanismLigament2d setpointFunnel = setpointFunnelBase.append(
+            new MechanismLigament2d("setpointFunnel", kFunnelLength.in(Meters), kDefaultFunnelDeg, kSetpointWidth,
                     kSetpointBaseColor));
     
     SingleJointedArmSim funnelSim = new SingleJointedArmSim(
@@ -144,7 +134,7 @@ public class Funnel extends SubsystemBase{
     }
     
     public void visualizeSetpoint(Angle targetAngle) {
-        setpointIntake.setAngle(90 - targetAngle.in(Degrees));
+        setpointFunnel.setAngle(90 - targetAngle.in(Degrees));
     }
 
     @Override
