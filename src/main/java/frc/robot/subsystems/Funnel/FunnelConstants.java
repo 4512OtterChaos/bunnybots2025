@@ -40,8 +40,8 @@ public class FunnelConstants {
 
     public static final TalonFXConfiguration kConfig = new TalonFXConfiguration();
     static {
-        FeedbackConfigs feedback = kConfig.Feedback;//TODO: Teach
-        feedback.SensorToMechanismRatio = kGearRatio;//TODO: Teach
+        FeedbackConfigs feedback = kConfig.Feedback;
+        feedback.SensorToMechanismRatio = kGearRatio;
 
         MotorOutputConfigs output = kConfig.MotorOutput;
         output.NeutralMode = NeutralModeValue.Brake;
@@ -51,7 +51,7 @@ public class FunnelConstants {
         current.StatorCurrentLimit = 40; 
 
         Slot0Configs control = kConfig.Slot0;
-        control.kP = 6; 
+        control.kP = 6.007; 
         control.kI = 0;
         control.kD = 0;
         

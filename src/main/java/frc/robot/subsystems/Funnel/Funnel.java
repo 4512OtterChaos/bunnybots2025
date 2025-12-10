@@ -9,8 +9,11 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.Funnel.FunnelConstants.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -39,10 +42,15 @@ public class Funnel extends SubsystemBase{
 
     private final MotionMagicVoltage mmRequest = new MotionMagicVoltage(0);
 
+    private final StatusSignal<Angle> positionStatus = leftMotor.getPosition();
+
     public Funnel() {
         leftMotor.getConfigurator().apply(kConfig);
         rightMotor.getConfigurator().apply(kConfig);
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
+
+        positionStatus.setUpdateFrequency(100);
+        ParentDevice.optimizeBusUtilizationForAll(leftMotor, rightMotor);
 
         SmartDashboard.putData("Funnel/Subsystem", this);
 
@@ -51,14 +59,20 @@ public class Funnel extends SubsystemBase{
 
     @Override
     public void periodic() {
-        leftMotor.setControl(mmRequest.withPosition(targetAngle)); //TODO: Set periodically?
+        BaseStatusSignal.refreshAll(positionStatus);
 
-        //### Simulation
+        leftMotor.setControl(mmRequest.withPosition(targetAngle));
 
-        visualizeState(leftMotor.getPosition().getValue());
+        // ### Simulation
+
+        visualizeState(getAngle());
         visualizeSetpoint(targetAngle);
 
         log();
+    }
+
+    public Angle getAngle() {
+        return positionStatus.getValue();
     }
 
     // public void setVoltage(double voltage) {
@@ -78,26 +92,17 @@ public class Funnel extends SubsystemBase{
         return runOnce(()-> setAngle(angle));
     }
 
+    public void log() {
+        SmartDashboard.putNumber("Funnel/Funnel Degrees", getAngle().in(Degrees));
+        SmartDashboard.putData("Funnel/Mech2d", mech);
+    }
+
 
     
     //########## Simulation (IGNORE FOR NOW)
-
-    public void log() {
-        SmartDashboard.putNumber("Funnel/Funnel Native", leftMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Funnel/Funnel Degrees", leftMotor.getPosition().getValue().in(Degrees));
-        SmartDashboard.putNumber("Funnel/Funnel Target Degrees", targetAngle.in(Degrees));
-        SmartDashboard.putNumber("Funnel/Motor Current", leftMotor.getStatorCurrent().getValue().in(Amps));
-        // SmartDashboard.putBoolean("Funnel/isStalled", isStalled());
-        SmartDashboard.putNumber("Funnel/Motor Voltage", leftMotor.getMotorVoltage().getValue().in(Volts));
-        // SmartDashboard.putNumber("Funnel/Motor Target Voltage", targetVoltage);
-        SmartDashboard.putNumber("Funnel/Motor Velocity", leftMotor.getVelocity().getValue().in(RPM));
-        // SmartDashboard.putBoolean("Funnel/Motor Stalled", isStalled());
-        SmartDashboard.putNumber("Funnel/Time", Timer.getFPGATimestamp());
-        SmartDashboard.putData("Funnel/Mech2d", mech);
-    }
     
-    Mechanism2d mech = new Mechanism2d(.8, .8, new Color8Bit(0, 100, 150));
-    MechanismRoot2d mechRoot = mech.getRoot("funnel", 0.4, 0.1);
+    Mechanism2d mech = new Mechanism2d(.4, .4, new Color8Bit(0, 100, 150));
+    MechanismRoot2d mechRoot = mech.getRoot("funnel", 0.3, 0.05);
 
     private final Color8Bit kSetpointBaseColor = new Color8Bit(150, 0, 0);
     private final Color8Bit kMechBaseColor = new Color8Bit(0, 0, 150);
