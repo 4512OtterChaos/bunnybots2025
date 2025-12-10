@@ -1,7 +1,9 @@
 package frc.robot.subsystems.Funnel;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
@@ -22,6 +24,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -42,15 +48,18 @@ public class Funnel extends SubsystemBase{
 
     private final MotionMagicVoltage mmRequest = new MotionMagicVoltage(0);
 
+    private final StatusSignal<Voltage> voltageStatus = leftMotor.getMotorVoltage();
     private final StatusSignal<Angle> positionStatus = leftMotor.getPosition();
+    private final StatusSignal<AngularVelocity> velocityStatus = leftMotor.getVelocity();
+    private final StatusSignal<Current> statorStatus = leftMotor.getStatorCurrent();
+
 
     public Funnel() {
         leftMotor.getConfigurator().apply(kConfig);
         rightMotor.getConfigurator().apply(kConfig);
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
 
-        positionStatus.setUpdateFrequency(100);
-        ParentDevice.optimizeBusUtilizationForAll(leftMotor, rightMotor);
+        SmartDashboard.putData("Funnel/Subsystem", this);
 
         SmartDashboard.putData("Funnel/Subsystem", this);
 
@@ -75,6 +84,18 @@ public class Funnel extends SubsystemBase{
         return positionStatus.getValue();
     }
 
+    public AngularVelocity getVelocity() {
+        return velocityStatus.getValue();
+    }
+
+    public double getVoltage() {
+        return voltageStatus.getValue().in(Volts);
+    }
+
+    public double getCurrent() {
+        return statorStatus.getValue().in(Amps);
+    }
+
     // public void setVoltage(double voltage) {
     //     leftMotor.setVoltage(voltage);
     // }
@@ -93,7 +114,12 @@ public class Funnel extends SubsystemBase{
     }
 
     public void log() {
-        SmartDashboard.putNumber("Funnel/Funnel Degrees", getAngle().in(Degrees));
+        SmartDashboard.putNumber("Funnel/Angle Degrees", getAngle().in(Degrees));
+        SmartDashboard.putNumber("Funnel/Target Angle Degrees", targetAngle.in(Degrees));
+        SmartDashboard.putNumber("Funnel/RPM", getVelocity().in(RPM));
+        SmartDashboard.putNumber("Funnel/Voltage", getVoltage());
+        SmartDashboard.putNumber("Funnel/Current", getCurrent());
+
         SmartDashboard.putData("Funnel/Mech2d", mech);
     }
 
