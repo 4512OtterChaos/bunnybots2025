@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,6 +40,9 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(intake.setVoltageOutC().repeatedly());
 
     controller.rightBumper().whileTrue(superstructure.shotSequence());
+
+    controller.povUp().onTrue(funnel.setAngleC(Degrees.of(50)));
+    controller.povDown().onTrue(funnel.setAngleC(Degrees.of(0)));
   }
   
   public void teleopPeriodic(){
