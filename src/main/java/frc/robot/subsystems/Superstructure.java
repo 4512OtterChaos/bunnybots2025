@@ -28,7 +28,7 @@ public class Superstructure {
             waitUntil(shooterWheels.upToSpeedT()),
             shooterArm.setVoltageInC(),
             waitSeconds(0.5)
-        );
+        ).withName("Shot Sequence");
     }
 
 }
