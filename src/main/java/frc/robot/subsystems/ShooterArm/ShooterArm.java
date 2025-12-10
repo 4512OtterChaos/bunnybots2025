@@ -49,6 +49,14 @@ public class ShooterArm extends SubsystemBase{
     public void periodic() {
         log();
     }
+
+    public Angle getAngle() {
+        return leftMotor.getPosition().getValue();
+    }
+
+    public double getTargetVoltage() {
+        return targetVoltage;
+    }
     
     public void setVoltage(double voltage) {
         leftMotor.setVoltage(voltage);
