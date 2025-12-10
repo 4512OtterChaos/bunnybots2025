@@ -21,15 +21,15 @@ public class Intake extends SubsystemBase{
     }
 
     public Command setVoltageC(double voltage){
-        return runOnce(()->setVoltage(voltage));
+        return runOnce(()->setVoltage(voltage)).withName("Set Voltage: " + voltage);
     }
 
     public Command setVoltageInC(){
-        return setVoltageC(kVoltageIn);
+        return setVoltageC(kVoltageIn).withName("Set Voltage In");
     }
 
     public Command setVoltageOutC() {
-        return setVoltageC(kVoltageOut);
+        return setVoltageC(kVoltageOut).withName("Set Voltage Out");
     }
 }
 

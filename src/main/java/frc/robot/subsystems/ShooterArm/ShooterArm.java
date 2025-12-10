@@ -25,15 +25,15 @@ public class ShooterArm extends SubsystemBase{
         leftMotor.setVoltage(voltage);
     }
 
-    public Command setVoltageC(double voltage) {
-        return runOnce(()-> setVoltage(voltage));
+    public Command setVoltageC(double voltage){
+        return runOnce(()->setVoltage(voltage)).withName("Set Voltage: " + voltage);
     }
 
-    public Command setVoltageInC() {
-        return setVoltageC(kVoltageIn);
+    public Command setVoltageInC(){
+        return setVoltageC(kVoltageIn).withName("Set Voltage In");
     }
 
     public Command setVoltageOutC() {
-        return setVoltageC(kVoltageOut);
+        return setVoltageC(kVoltageOut).withName("Set Voltage Out");
     }
 }

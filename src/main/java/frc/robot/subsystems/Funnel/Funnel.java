@@ -108,7 +108,7 @@ public class Funnel extends SubsystemBase{
     // }
 
     public Command setAngleC(Angle angle) {
-        return runOnce(()-> setAngle(angle));
+        return runOnce(()-> setAngle(angle)).withName("Set Degrees: " + angle.in(Degrees));
     }
 
     public void log() {

@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,11 +51,11 @@ public class ShooterWheels extends SubsystemBase{
     }
 
     public Command setVoltageC(double voltage) {
-        return runOnce(()-> setVoltage(voltage));
+        return runOnce(()-> setVoltage(voltage)).withName("Set Voltage: " + voltage);
     }
 
     public Command setVelocityC(AngularVelocity velocity) {
-        return runOnce(()-> setVelocity(velocity));
+        return runOnce(()-> setVelocity(velocity)).withName("Set Velocity: " + velocity);
     }
 
     public Trigger upToSpeedT() {
