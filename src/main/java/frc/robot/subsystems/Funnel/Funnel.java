@@ -72,16 +72,15 @@ public class Funnel extends SubsystemBase{
 
         leftMotor.setControl(mmRequest.withPosition(targetAngle));
 
-        // ### Simulation
-
-        visualizeState(getAngle());
-        visualizeSetpoint(targetAngle);
-
         log();
     }
 
     public Angle getAngle() {
         return positionStatus.getValue();
+    }
+
+    public Angle getTargetAngle() {
+        return targetAngle;
     }
 
     public AngularVelocity getVelocity() {
@@ -119,35 +118,11 @@ public class Funnel extends SubsystemBase{
         SmartDashboard.putNumber("Funnel/RPM", getVelocity().in(RPM));
         SmartDashboard.putNumber("Funnel/Voltage", getVoltage());
         SmartDashboard.putNumber("Funnel/Current", getCurrent());
-
-        SmartDashboard.putData("Funnel/Mech2d", mech);
     }
 
 
     
     //########## Simulation (IGNORE FOR NOW)
-    
-    Mechanism2d mech = new Mechanism2d(.4, .4, new Color8Bit(0, 100, 150));
-    MechanismRoot2d mechRoot = mech.getRoot("funnel", 0.3, 0.05);
-
-    private final Color8Bit kSetpointBaseColor = new Color8Bit(150, 0, 0);
-    private final Color8Bit kMechBaseColor = new Color8Bit(0, 0, 150);
-
-    private final double kSetpointWidth = 6;
-    private final double kMechWidth = 9;
-
-    private final double kDefaultFunnelDeg = 90;
-
-    private final MechanismLigament2d mechBase = mechRoot.append(
-            new MechanismLigament2d("Base", kPivotHeight.in(Meters), 90, kMechWidth, kMechBaseColor));
-    private final MechanismLigament2d mechFunnel = mechBase.append(
-            new MechanismLigament2d("Funnel", kFunnelLength.in(Meters), kDefaultFunnelDeg, kMechWidth, kMechBaseColor));
-    
-    private final MechanismLigament2d setpointBase = mechRoot.append(
-            new MechanismLigament2d("setpointBase", kPivotHeight.in(Meters), 90, kSetpointWidth, kSetpointBaseColor));
-    private final MechanismLigament2d setpointFunnel = setpointBase.append(
-            new MechanismLigament2d("setpointFunnel", kFunnelLength.in(Meters), kDefaultFunnelDeg, kSetpointWidth,
-                    kSetpointBaseColor));
     
     SingleJointedArmSim funnelSim = new SingleJointedArmSim(
         LinearSystemId.createSingleJointedArmSystem(
@@ -172,14 +147,6 @@ public class Funnel extends SubsystemBase{
         ),
         DCMotor.getKrakenX60(2)
     );
-    
-    public void visualizeState(Angle funnelAngle) {
-        mechFunnel.setAngle(90 - funnelAngle.in(Degrees));
-    }
-    
-    public void visualizeSetpoint(Angle targetAngle) {
-        setpointFunnel.setAngle(90 - targetAngle.in(Degrees));
-    }
 
     @Override
     public void simulationPeriodic() {
