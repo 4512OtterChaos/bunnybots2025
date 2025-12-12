@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Superstructure;
+import frc.robot.subsystems.SuperstructureViz;
 import frc.robot.subsystems.Funnel.Funnel;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.ShooterArm.ShooterArm;
@@ -21,6 +22,7 @@ public class RobotContainer {
   ShooterWheels shooterWheels = new ShooterWheels();
   Funnel funnel = new Funnel();
   Superstructure superstructure = new Superstructure(intake, shooterArm, shooterWheels, funnel);
+  SuperstructureViz superstructureViz = new SuperstructureViz(intake, shooterArm, shooterWheels, funnel);
   
   CommandXboxController controller = new CommandXboxController(0);
   
@@ -44,11 +46,14 @@ public class RobotContainer {
     controller.povUp().onTrue(funnel.setAngleC(Degrees.of(50)));
     controller.povDown().onTrue(funnel.setAngleC(Degrees.of(0)));
 
-    controller.a().whileTrue(shooterArm.setVoltageInC().repeatedly());
-    controller.b().whileTrue(shooterArm.setVoltageOutC().repeatedly());
+    controller.povRight().whileTrue(shooterArm.setVoltageInC().repeatedly());
+  }
+
+  public void periodic() {
+    superstructureViz.periodic();
   }
   
-  public void teleopPeriodic(){
+  public void teleopPeriodic() {
     
   }
   
