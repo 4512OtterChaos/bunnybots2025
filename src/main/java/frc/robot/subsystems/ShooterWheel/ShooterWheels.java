@@ -38,6 +38,10 @@ public class ShooterWheels extends SubsystemBase{
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
     }
 
+    public Angle getAngle(){
+        return leftMotor.getPosition().getValue();
+    }
+
     public void setVoltage(double voltage) {
         leftMotor.setVoltage(voltage);
     }
