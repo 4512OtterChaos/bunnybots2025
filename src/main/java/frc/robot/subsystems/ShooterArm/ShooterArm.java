@@ -47,6 +47,7 @@ public class ShooterArm extends SubsystemBase{
         leftMotor.getConfigurator().apply(kConfig);
         rightMotor.getConfigurator().apply(kConfig);
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
+        SmartDashboard.putData("Shooter Arm/Subsystem", this);
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ShooterArm extends SubsystemBase{
     }
 
     public Command setVoltageInC(){
-        return setVoltageC(kVoltageIn).withName("Set Voltage In");
+        return setVoltageC(kVoltageIn).withName("Set Voltage In");//TODO: Adjust to be smaller when hits hardstop (stall detection)
     }
 
     public Command setVoltageOutC() {
