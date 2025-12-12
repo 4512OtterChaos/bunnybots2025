@@ -39,9 +39,9 @@ public class Funnel extends SubsystemBase{
 
     private MotionMagicVoltage mmRequest = new MotionMagicVoltage(0);
 
-    private final StatusSignal<Voltage> voltageStatus = leftMotor.getMotorVoltage();
     private final StatusSignal<Angle> positionStatus = leftMotor.getPosition();
     private final StatusSignal<AngularVelocity> velocityStatus = leftMotor.getVelocity();
+    private final StatusSignal<Voltage> voltageStatus = leftMotor.getMotorVoltage();
     private final StatusSignal<Current> statorStatus = leftMotor.getStatorCurrent();
 
 
@@ -57,7 +57,7 @@ public class Funnel extends SubsystemBase{
 
     @Override
     public void periodic() {
-        BaseStatusSignal.refreshAll(positionStatus);
+        BaseStatusSignal.refreshAll(positionStatus, velocityStatus, voltageStatus, statorStatus);
 
         leftMotor.setControl(mmRequest.withPosition(targetAngle));
 
@@ -76,12 +76,12 @@ public class Funnel extends SubsystemBase{
         return velocityStatus.getValue();
     }
 
-    public double getVoltage() {
-        return voltageStatus.getValue().in(Volts);
+    public Voltage getVoltage() {
+        return voltageStatus.getValue();
     }
 
-    public double getCurrent() {
-        return statorStatus.getValue().in(Amps);
+    public Current getCurrent() {
+        return statorStatus.getValue();
     }
 
     // public void setVoltage(double voltage) {
@@ -103,10 +103,10 @@ public class Funnel extends SubsystemBase{
 
     public void log() {
         SmartDashboard.putNumber("Funnel/Angle Degrees", getAngle().in(Degrees));
-        SmartDashboard.putNumber("Funnel/Target Angle Degrees", targetAngle.in(Degrees));
+        SmartDashboard.putNumber("Funnel/Target Angle Degrees", getTargetAngle().in(Degrees));
         SmartDashboard.putNumber("Funnel/RPM", getVelocity().in(RPM));
-        SmartDashboard.putNumber("Funnel/Voltage", getVoltage());
-        SmartDashboard.putNumber("Funnel/Current", getCurrent());
+        SmartDashboard.putNumber("Funnel/Voltage", getVoltage().in(Volts));
+        SmartDashboard.putNumber("Funnel/Current", getCurrent().in(Amps));
     }
 
 
