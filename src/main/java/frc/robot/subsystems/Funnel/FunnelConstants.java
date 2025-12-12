@@ -33,6 +33,9 @@ public class FunnelConstants {
     public static final Distance kPivotHeight = Inches.of(3.72);
     public static final Distance kFunnelLength = Inches.of(10.04);
 
+    public static final Angle kAngleTolerance = Degrees.of(2); //TODO: Tune to be accurate but work
+    public static final double kDebounceTime = 0.2;
+
     public static final TalonFXConfiguration kConfig = new TalonFXConfiguration();
     static {
         FeedbackConfigs feedback = kConfig.Feedback;

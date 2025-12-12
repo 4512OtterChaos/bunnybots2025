@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
@@ -22,10 +23,12 @@ public class Superstructure {
         this.funnel = funnel;
     } 
 
-    public Command shotSequence(){
+    public Command shotSequence() {
         return sequence(
-            shooterWheels.setVelocityC(RPM.of(430)),
-            waitUntil(shooterWheels.upToSpeedT()),
+            parallel(
+                funnel.setAngleC(Degrees.of(40)),
+                shooterWheels.setVelocityC(RPM.of(430))
+            ),
             shooterArm.setVoltageInC(),
             waitSeconds(0.5)
         ).withName("Shot Sequence");

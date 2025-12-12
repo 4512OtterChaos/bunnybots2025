@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 public class Funnel extends SubsystemBase{
@@ -95,12 +96,20 @@ public class Funnel extends SubsystemBase{
         targetAngle = angle;
     }
 
+    public boolean atTargetAngle() {
+        return Math.abs(targetAngle.in(Degrees) - getAngle().in(Degrees)) < kAngleTolerance.in(Degrees);
+    }
+
     // public Command setVoltageC(double voltage) {
     //     return runOnce(()-> setVoltage(voltage));
     // }
 
     public Command setAngleC(Angle angle) {
-        return runOnce(()-> setAngle(angle)).withName("Set Degrees: " + angle.in(Degrees));
+        return run(()-> setAngle(angle)).until(atTargetAngleT()).withName("Set Degrees: " + angle.in(Degrees));
+    }
+
+    public Trigger atTargetAngleT() {
+        return new Trigger(()-> atTargetAngle()).debounce(kDebounceTime);
     }
 
     public void log() {

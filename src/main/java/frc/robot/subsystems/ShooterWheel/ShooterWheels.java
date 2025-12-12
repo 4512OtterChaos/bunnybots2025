@@ -60,7 +60,7 @@ public class ShooterWheels extends SubsystemBase{
     }
 
     public Command setVelocityC(AngularVelocity velocity) {
-        return runOnce(()-> setVelocity(velocity)).withName("Set Velocity: " + velocity);
+        return run(()-> setVelocity(velocity)).until(upToSpeedT()).withName("Set Velocity: " + velocity);
     }
 
     public Trigger upToSpeedT() {
