@@ -7,12 +7,21 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MomentOfInertia;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.util.OCUnits.PoundSquareInches;
 
 public class ShooterWheelConstants {
     public static final int kLeftMotorID = 31;
     public static final int kRightMotorID = 32;
+
+    public static final int kGearRatio = 1; //1:1
+
+    public static final MomentOfInertia kMomentOfInertia = PoundSquareInches.of(0.579165);
+
+    public static final Distance kWheelDiameter = Inches.of(4);
 
     public static final AngularVelocity kVelocityTolerance = RPM.of(30);
 

@@ -3,18 +3,20 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.Funnel.Funnel;
 import frc.robot.subsystems.Funnel.FunnelConstants;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.ShooterArm.ShooterArm;
 import frc.robot.subsystems.ShooterArm.ShooterArmConstants;
+import frc.robot.subsystems.ShooterWheel.ShooterWheelConstants;
 import frc.robot.subsystems.ShooterWheel.ShooterWheels;
+import frc.robot.util.MechanismCircle2d;
 
 public class SuperstructureViz {
     Intake intake;
@@ -22,8 +24,9 @@ public class SuperstructureViz {
     ShooterWheels shooterWheels;
     Funnel funnel; 
 
-    private final Color8Bit kSetpointBaseColor = new Color8Bit(150, 0, 0);
     private final Color8Bit kMechBaseColor = new Color8Bit(0, 0, 150);
+    private final Color8Bit kSetpointBaseColor = new Color8Bit(150, 0, 0);
+    private final Color8Bit kWheelColor = new Color8Bit(0, 150, 0);
 
     private final double kSetpointWidth = 6;
     private final double kMechWidth = 9;
@@ -61,21 +64,22 @@ public class SuperstructureViz {
             new MechanismLigament2d("ArmBaseLeft", ShooterArmConstants.kBaseLength.in(Meters)/2, 180, kMechWidth, kMechBaseColor));
     private final MechanismLigament2d mechArmLeft = mechBaseLeft.append(
             new MechanismLigament2d("ArmLeft", ShooterArmConstants.kPivotToWheels.in(Meters), -kDefaultArmDeg, kMechWidth, kMechBaseColor));
+    private MechanismCircle2d leftShooterWheel = new MechanismCircle2d(mechArmLeft, 8, ShooterWheelConstants.kWheelDiameter, "roller", kWheelColor, true, true);
     private final MechanismLigament2d mechBaseRight = shooterMechRoot.append(
             new MechanismLigament2d("BaseRight", ShooterArmConstants.kBaseLength.in(Meters)/2, 0, kMechWidth, kMechBaseColor));
     private final MechanismLigament2d mechArmRight = mechBaseRight.append(
             new MechanismLigament2d("ArmRight", ShooterArmConstants.kPivotToWheels.in(Meters), kDefaultArmDeg, kMechWidth, kMechBaseColor));
+    private MechanismCircle2d rightShooterWheel = new MechanismCircle2d(mechArmRight, 8, ShooterWheelConstants.kWheelDiameter, "roller", kWheelColor, true, true);
+
     
     private final MechanismLigament2d setpointBaseLeft = shooterMechRoot.append(
             new MechanismLigament2d("setpointArmBaseLeft", ShooterArmConstants.kBaseLength.in(Meters)/2, 180, kSetpointWidth, kSetpointBaseColor));
     private final MechanismLigament2d setpointArmLeft = setpointBaseLeft.append(
-            new MechanismLigament2d("setpointArmLeft", ShooterArmConstants.kPivotToWheels.in(Meters), -kDefaultArmDeg, kSetpointWidth,
-                    kSetpointBaseColor));
+            new MechanismLigament2d("setpointArmLeft", ShooterArmConstants.kPivotToWheels.in(Meters), -kDefaultArmDeg, kSetpointWidth, kSetpointBaseColor));
     private final MechanismLigament2d setpointBaseRight = shooterMechRoot.append(
             new MechanismLigament2d("setpointArmBaseRight", ShooterArmConstants.kBaseLength.in(Meters)/2, 0, kSetpointWidth, kSetpointBaseColor));
     private final MechanismLigament2d setpointArmRight = setpointBaseRight.append(
-            new MechanismLigament2d("setpointArmRight", ShooterArmConstants.kPivotToWheels.in(Meters), kDefaultArmDeg, kSetpointWidth,
-                    kSetpointBaseColor));
+            new MechanismLigament2d("setpointArmRight", ShooterArmConstants.kPivotToWheels.in(Meters), kDefaultArmDeg, kSetpointWidth, kSetpointBaseColor));
     
 
     
@@ -86,10 +90,14 @@ public class SuperstructureViz {
         
         mechArmLeft.setAngle(180 + (kDefaultArmDeg - shooterArm.getAngle().in(Degrees)));
         mechArmRight.setAngle(180 - (kDefaultArmDeg - shooterArm.getAngle().in(Degrees)));
+
+        leftShooterWheel.setAngle(shooterWheels.getAngle());
+        rightShooterWheel.setAngle(shooterWheels.getAngle().times(-1));
+
         setpointArmLeft.setAngle(180 + (kDefaultArmDeg - ((shooterArm.getTargetVoltage() > 0) ? ShooterArmConstants.kInAngle.in(Degrees) : ShooterArmConstants.kOutAngle.in(Degrees))));
         setpointArmRight.setAngle(180 - (kDefaultArmDeg - ((shooterArm.getTargetVoltage() > 0) ? ShooterArmConstants.kInAngle.in(Degrees) : ShooterArmConstants.kOutAngle.in(Degrees))));
         
-        SmartDashboard.putData("FunnelMech", funnelMech);
-        SmartDashboard.putData("ShooterMech", shooterMech);
+        SmartDashboard.putData("Mechs/FunnelMech", funnelMech);
+        SmartDashboard.putData("Mechs/ShooterMech", shooterMech);
     }
 }
