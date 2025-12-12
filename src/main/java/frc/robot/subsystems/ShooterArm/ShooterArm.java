@@ -1,5 +1,7 @@
 package frc.robot.subsystems.ShooterArm;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.ChassisReference;
@@ -8,6 +10,9 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -30,7 +35,13 @@ public class ShooterArm extends SubsystemBase{
     private TalonFX leftMotor = new TalonFX(kMotorID);
     private TalonFX rightMotor = new TalonFX(kMotorID);
 
-    private double targetVoltage = kVoltageIn;
+    private Voltage targetVoltage = Volts.of(0);
+
+    private final StatusSignal<Angle> positionStatus = leftMotor.getPosition();
+    private final StatusSignal<AngularVelocity> velocityStatus = leftMotor.getVelocity();
+    private final StatusSignal<Voltage> voltageStatus = leftMotor.getMotorVoltage();
+    private final StatusSignal<Current> statorStatus = leftMotor.getStatorCurrent();
+
 
     public ShooterArm() {
         leftMotor.getConfigurator().apply(kConfig);
@@ -42,20 +53,33 @@ public class ShooterArm extends SubsystemBase{
 
     @Override
     public void periodic() {
+        BaseStatusSignal.refreshAll(positionStatus, velocityStatus, voltageStatus, statorStatus);
         log();
     }
 
     public Angle getAngle() {
-        return leftMotor.getPosition().getValue();
+        return positionStatus.getValue();
     }
 
-    public double getTargetVoltage() {
+    public AngularVelocity getVelocity() {
+        return velocityStatus.getValue();
+    }
+
+    public Voltage getVoltage() {
+        return voltageStatus.getValue();
+    }
+
+    public Voltage getTargetVoltage() {
         return targetVoltage;
+    }
+
+    public Current getCurrent() {
+        return statorStatus.getValue();
     }
     
     public void setVoltage(double voltage) {
         leftMotor.setVoltage(voltage);
-        targetVoltage = voltage;
+        targetVoltage = Volts.of(voltage);
     }
 
     public Command setVoltageC(double voltage){
@@ -70,22 +94,17 @@ public class ShooterArm extends SubsystemBase{
         return setVoltageC(kVoltageOut).withName("Set Voltage Out");
     }
 
+    public void log() {
+        SmartDashboard.putNumber("Shooter Arm/Angle Degrees", getAngle().in(Degrees));
+        SmartDashboard.putNumber("Shooter Arm/RPM", getVelocity().in(RPM));
+        SmartDashboard.putNumber("Shooter Arm/Voltage", getVoltage().in(Volts));
+        SmartDashboard.putNumber("Shooter Arm/Target Voltage", getTargetVoltage().in(Volts));
+        SmartDashboard.putNumber("Shooter Arm/Current", getCurrent().in(Amps));
+    }
+
 
     
     //########## Simulation (IGNORE FOR NOW)
-
-    public void log() {
-        SmartDashboard.putNumber("ShooterArm/ShooterArm Native", leftMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("ShooterArm/ShooterArm Degrees", leftMotor.getPosition().getValue().in(Degrees));
-        SmartDashboard.putNumber("ShooterArm/Motor Current", leftMotor.getStatorCurrent().getValue().in(Amps));
-        // SmartDashboard.putBoolean("Funnel/isStalled", isStalled());
-        SmartDashboard.putNumber("ShooterArm/Motor Voltage", leftMotor.getMotorVoltage().getValue().in(Volts));
-        // SmartDashboard.putNumber("ShooterArm/Target Motor Voltage", targetVoltage);
-        // SmartDashboard.putNumber("Funnel/Motor Target Voltage", targetVoltage);
-        SmartDashboard.putNumber("ShooterArm/Motor Velocity", leftMotor.getVelocity().getValue().in(RPM));
-        // SmartDashboard.putBoolean("Funnel/Motor Stalled", isStalled());
-        SmartDashboard.putNumber("ShooterArm/Time", Timer.getFPGATimestamp());
-    }
     
     SingleJointedArmSim shooterArmSim = new SingleJointedArmSim(
         LinearSystemId.createSingleJointedArmSystem(
