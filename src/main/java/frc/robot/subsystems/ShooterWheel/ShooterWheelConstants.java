@@ -15,6 +15,7 @@ public class ShooterWheelConstants {
     public static final int kRightMotorID = 32;
 
     public static final AngularVelocity kVelocityTolerance = RPM.of(30);
+    public static final double kDebounceTime = 0.2;
 
     public static final TalonFXConfiguration kConfig = new TalonFXConfiguration();
     static {

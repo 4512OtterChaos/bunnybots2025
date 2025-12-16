@@ -56,6 +56,6 @@ public class ShooterWheels extends SubsystemBase{
     }
 
     public Trigger upToSpeedT() {
-        return new Trigger(()-> upToSpeed());
+        return new Trigger(()-> upToSpeed()).debounce(kDebounceTime);
     }
 }
