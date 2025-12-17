@@ -31,7 +31,6 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.ShooterArm.ShooterArmConstants.*; 
 
 public class ShooterArm extends SubsystemBase{
-    
     private TalonFX leftMotor = new TalonFX(kMotorID);
     private TalonFX rightMotor = new TalonFX(kMotorID);
 

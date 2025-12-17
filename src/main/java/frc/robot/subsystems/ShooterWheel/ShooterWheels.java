@@ -23,15 +23,15 @@ public class ShooterWheels extends SubsystemBase{
     private TalonFX leftMotor = new TalonFX(kLeftMotorID);
     private TalonFX rightMotor = new TalonFX(kRightMotorID);
 
+    private AngularVelocity targetVelocity = AngularVelocity.ofBaseUnits(0, RPM);
+
+    private final VelocityDutyCycle velocityRequest = new VelocityDutyCycle(0);
+
     private final StatusSignal<Angle> positionStatus = leftMotor.getPosition();
     private final StatusSignal<AngularVelocity> velocityStatus = leftMotor.getVelocity();
     private final StatusSignal<Voltage> voltageStatus = leftMotor.getMotorVoltage();
     private final StatusSignal<Current> statorStatus = leftMotor.getStatorCurrent();
 
-
-    private final VelocityDutyCycle velocityRequest = new VelocityDutyCycle(0);
-
-    private AngularVelocity targetVelocity = AngularVelocity.ofBaseUnits(0, RPM);
 
     public ShooterWheels() {
         leftMotor.getConfigurator().apply(kConfig);
